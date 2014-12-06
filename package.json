@@ -1,5 +1,5 @@
 {
-  "name": "book-cover-generator",
+  "name": "book-cover",
   "version": "0.0.0",
   "author": "Paul Nechifor <paul@nechifor.net> (http://nechifor.net/)",
   "main": "./lib",
@@ -8,12 +8,12 @@
   },
   "dependencies": {
     "async": "^0.9.0",
-    "jsdom": "^1.0.0-pre.6",
+    "cheerio": "^0.18.0",
     "xml2js": "^0.4.4"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/paul-nechifor/book-cover-generator"
+    "url": "https://github.com/paul-nechifor/book-cover"
   },
   "license": "MIT"
 }

@@ -13,46 +13,38 @@ exports.OrnamentSet = class OrnamentSet
 
 exports.Cover = class Cover
   constructor: (@builder, @info) ->
+    @$ = @builder.$
     @width = @info.width or 450
     @height = @info.height or 600
     @el = null
 
   generate: ->
-    @el = @builder.doc.createElement 'svg'
-    @el.setAttribute 'xmlns', 'http://www.w3.org/2000/svg'
-    @el.setAttribute 'width', @width
-    @el.setAttribute 'height', @height
+    @el = @$ '<svg/>'
+    .attr
+      xmlns: 'http://www.w3.org/2000/svg'
+      width: @width
+      height: @height
 
-    text = @builder.newEl @el, 'text'
-    text.setAttribute 'x', 0
-    text.setAttribute 'y', 0
-    text.innerHTML = @info.title + ' by ' + @info.author
+    text = @$ '<text/>'
+    .attr
+      x: 0
+      y: @height / 2
+    .text @info.title + ' by ' + @info.author
+    @el.append text
     @
 
-  intoElement: (parent) ->
-    parent.appendChild @el
-    @
-
-  intoFile: (name, cb) ->
-    top = @builder.doc.body
-    @intoElement top
-    data = '<?xml version="1.0" standalone="no"?>' + top.innerHTML
+  save: (name, cb) ->
+    data = '<?xml version="1.0" standalone="no"?>' + @$.xml @el
     @builder.fs.writeFile name, data, {encoding: 'utf8'}, cb
 
 exports.CoverBuilder = class CoverBuilder
   constructor: (isNode) ->
     if isNode
       @fs = require 'fs'
-      @window = require('jsdom').jsdom().parentWindow
+      @$ = require('cheerio').load '<html><body></body></html>'
     else
-      @window = window
-    @doc = @window.document
+      @$ = $
     @ornaments = new OrnamentSet require './ornaments'
 
   newCover: (opts) ->
     new Cover @, opts
-
-  newEl: (parent, type) ->
-    el = @doc.createElement type
-    parent.appendChild el
-    el
